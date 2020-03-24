@@ -8,5 +8,12 @@ namespace Ora2Uml.DataDictionary
         public String Password { get; set; } = String.Empty;
 
         public override String ToString() => $"{User}@{Name}";
+
+        public Connection() {}
+        public Connection(String name, String user, String password) {
+            this.Name = name;
+            this.User = user;
+            this.Password = password;
+        }
     }
 }

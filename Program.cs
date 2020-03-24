@@ -1,4 +1,5 @@
 ﻿using System;
+using Ora2Uml.DataDictionary;
 
 namespace Ora2Uml
 {
@@ -6,7 +7,10 @@ namespace Ora2Uml
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Ora2Uml");
+
+            var conn = new Connection(name: "xe", user: "sysadm", password: "sysadm");
+            Console.WriteLine($"Connection = {conn}");
         }
     }
 }
