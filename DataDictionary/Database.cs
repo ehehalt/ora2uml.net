@@ -1,24 +1,25 @@
 using System;
+using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
 
 namespace Ora2Uml.DataDictionary
 {
-    public class Database : BaseObject {
+    public class Database {
 
-        public Connection Connection { get; private set; }
+        public String ConnectionString { get; private set; }
+        public IList<Table> Tables { get; private set; } = new List<Table>();
 
-        public Database(Connection connection)
+        public Database(String connectionString)
         {
-            this.Connection = connection;
+            this.ConnectionString = connectionString;
         }
 
         public bool CheckConnection()
         {
-            var connectionString = Connection.ConnectionString;
             var connectionOk = true;
             try
             {
-                var conn = new OracleConnection(connectionString);
+                var conn = new OracleConnection(ConnectionString);
                 conn.Open();
                 conn.Close();
             }
@@ -28,6 +29,12 @@ namespace Ora2Uml.DataDictionary
                 connectionOk = false;
             }
             return connectionOk;
+        }
+
+        public bool ReadSchema(String schema)
+        {
+            var ok = true;
+            return ok;
         }
     }
 }
