@@ -9,8 +9,22 @@ namespace Ora2Uml
         {
             Console.WriteLine("Ora2Uml");
 
-            var conn = new Connection(name: "xe", user: "sysadm", password: "sysadm");
-            Console.WriteLine($"Connection = {conn}");
+            // var connection = new Connection(name: "xe", user: "system", password: "sysadm");
+            var connection = @"
+                Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=urHost)(PORT=urPort)))
+                (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=urOracleSID)));User Id=urUsername;
+                Password=urPassword;";
+
+            var database = new Database(connection);
+            Console.WriteLine(database.Connection.ConnectionStringBuilder.ConnectionString);
+            if (database.CheckConnection())
+            {
+                Console.WriteLine($"Connection {connection} checked successfully!");
+            }
+            else
+            {
+                Console.WriteLine($"Connection {connection} check fails ...");
+            }
         }
     }
 }

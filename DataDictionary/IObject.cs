@@ -3,6 +3,6 @@ using System;
 namespace Ora2Uml.DataDictionary
 {
     interface IObject {
-        String Name { get; set; }
+        String Name { get; }
     }
 }
