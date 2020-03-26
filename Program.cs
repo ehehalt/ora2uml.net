@@ -28,7 +28,7 @@ namespace Ora2Uml
                 Console.WriteLine($"Connection check fails ...");
             }
 
-            (var tables, var error) = AllTables.ReadTables(connectionString, "");
+            (var tables, var error) = AllTables.ReadTables(connectionString, " where owner = 'SYS' ");
             if (error != null)
             {
                 Console.Error.WriteLine(error);

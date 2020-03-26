@@ -5,17 +5,23 @@ using Ora2Uml.Objects;
 
 namespace Ora2Uml.DataDictionary
 {
-    public static class AllTables
+    public static class AllTabColumns
     {
         private static String ColOwner => "owner";
         private static String ColTableName => "table_name";
-        private static String TableName => "all_tables";
+        private static String ColName => "name";
+        private static String TableName => "all_tab_columns";
 
-        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName} FROM {TableName} ";
+        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColName} FROM {TableName} ";
 
-        public static (IList<Table> tables, String error) ReadTables(String connString, String whereClause)
+        public static (IList<Column> columns, String error) ReadColumns(String connString, Table table)
         {
-            IList<Table> tables = new List<Table>();
+            return ReadColumns(connString, $" where table_name = '{table.Name}'");
+        }
+
+        public static (IList<Column> columns, String error) ReadColumns(String connString, String whereClause)
+        {
+            IList<Column> columns = new List<Column>();
             String error = null;
 
             try 
@@ -30,19 +36,20 @@ namespace Ora2Uml.DataDictionary
                     while(rdr.Read())
                     {
                         var owner = rdr[ColOwner].ToString();
+                        var tableName = rdr[TableName].ToString();
                         var name = rdr[ColTableName].ToString();
 
-                        tables.Add(new Table(owner, name));
+                        columns.Add(new Column(owner, tableName, name));
                     }
                 }
             }
             catch(Exception ex)
             {
                 error = ex.Message;
-                tables.Clear();
+                columns.Clear();
             }
 
-            return (tables, error);
+            return (columns, error);
         }
     }
 }
