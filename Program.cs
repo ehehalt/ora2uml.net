@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ora2Uml.Objects;
 using Ora2Uml.DataDictionary;
 
@@ -28,18 +29,19 @@ namespace Ora2Uml
                 Console.WriteLine($"Connection check fails ...");
             }
 
-            (var tables, var error) = AllTables.ReadTables(connectionString, " where owner = 'SYS' ");
-            if (error != null)
+            var tables = AllTables.ReadTables(connectionString, " where owner = 'SYS' ");
+
+            foreach(Table table in tables)
             {
-                Console.Error.WriteLine(error);
-                return;
+                Console.WriteLine($"Table: {table}");
             }
-            else
+
+            var table1 = tables.First();
+            var columns = AllTabColumns.ReadColumns(connectionString, table1);
+
+            foreach(Column column in columns)
             {
-                foreach(Table table in tables)
-                {
-                    Console.WriteLine($"Table: {table.FullName}");
-                }
+                Console.WriteLine($"Column: {column}");
             }
         }
     }

@@ -13,10 +13,9 @@ namespace Ora2Uml.DataDictionary
 
         private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName} FROM {TableName} ";
 
-        public static (IList<Table> tables, String error) ReadTables(String connString, String whereClause)
+        public static IList<Table> ReadTables(String connString, String whereClause)
         {
             IList<Table> tables = new List<Table>();
-            String error = null;
 
             try 
             {
@@ -30,19 +29,19 @@ namespace Ora2Uml.DataDictionary
                     while(rdr.Read())
                     {
                         var owner = rdr[ColOwner].ToString();
-                        var name = rdr[ColTableName].ToString();
+                        var tableName = rdr[ColTableName].ToString();
 
-                        tables.Add(new Table(owner, name));
+                        tables.Add(new Table(owner, tableName));
                     }
                 }
             }
             catch(Exception ex)
             {
-                error = ex.Message;
+                Console.Error.WriteLine(ex.Message);
                 tables.Clear();
             }
 
-            return (tables, error);
+            return tables;
         }
     }
 }

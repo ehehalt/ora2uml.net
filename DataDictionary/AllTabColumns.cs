@@ -9,20 +9,19 @@ namespace Ora2Uml.DataDictionary
     {
         private static String ColOwner => "owner";
         private static String ColTableName => "table_name";
-        private static String ColName => "name";
+        private static String ColColumnName => "column_name";
         private static String TableName => "all_tab_columns";
 
-        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColName} FROM {TableName} ";
+        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColColumnName} FROM {TableName} ";
 
-        public static (IList<Column> columns, String error) ReadColumns(String connString, Table table)
+        public static IList<Column> ReadColumns(String connString, Table table)
         {
-            return ReadColumns(connString, $" where table_name = '{table.Name}'");
+            return ReadColumns(connString, $" where table_name = '{table.TableName}'");
         }
 
-        public static (IList<Column> columns, String error) ReadColumns(String connString, String whereClause)
+        public static IList<Column> ReadColumns(String connString, String whereClause)
         {
             IList<Column> columns = new List<Column>();
-            String error = null;
 
             try 
             {
@@ -36,20 +35,20 @@ namespace Ora2Uml.DataDictionary
                     while(rdr.Read())
                     {
                         var owner = rdr[ColOwner].ToString();
-                        var tableName = rdr[TableName].ToString();
-                        var name = rdr[ColTableName].ToString();
+                        var tableName = rdr[ColTableName].ToString();
+                        var columnName = rdr[ColColumnName].ToString();
 
-                        columns.Add(new Column(owner, tableName, name));
+                        columns.Add(new Column(owner, tableName, columnName));
                     }
                 }
             }
             catch(Exception ex)
             {
-                error = ex.Message;
+                Console.Error.WriteLine(ex.Message);
                 columns.Clear();
             }
 
-            return (columns, error);
+            return columns;
         }
     }
 }

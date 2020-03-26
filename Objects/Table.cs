@@ -4,9 +4,9 @@ namespace Ora2Uml.Objects
 {
     public class Table {
         public String Owner { get; set; } = String.Empty;
-        public String Name { get; set; } = String.Empty;
+        public String TableName { get; set; } = String.Empty;
 
-        public String FullName => $"{Owner}{(String.IsNullOrEmpty(Owner) ? "" : ".")}{Name}";
+        public String FullName => $"{Owner}{(String.IsNullOrEmpty(Owner) ? "" : ".")}{TableName}";
 
         // Implement with columns?
         // Referenced by
@@ -16,10 +16,15 @@ namespace Ora2Uml.Objects
         {    
         }
 
-        public Table(String owner, String name)
+        public Table(String owner, String tableName)
         {
             this.Owner = owner;
-            this.Name = name;
+            this.TableName = tableName;
+        }
+
+        public override String ToString()
+        {
+            return FullName;
         }
     }
 }
