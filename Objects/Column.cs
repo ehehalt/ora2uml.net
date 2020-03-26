@@ -6,5 +6,6 @@ namespace Ora2Uml.Objects
 {
     public class Column
     {
+        public String Name { get; set; } = String.Empty;
     }
 }

@@ -22,13 +22,24 @@ namespace Ora2Uml
             if (database.CheckConnection())
             {
                 Console.WriteLine($"Connection checked successfully!");
-
-                database.ReadSchema("SYS", filter);
-                Console.WriteLine($"{database.Tables.Count} tables readed.");
             }
             else
             {
                 Console.WriteLine($"Connection check fails ...");
+            }
+
+            (var tables, var error) = AllTables.ReadTables(connectionString, "");
+            if (error != null)
+            {
+                Console.Error.WriteLine(error);
+                return;
+            }
+            else
+            {
+                foreach(Table table in tables)
+                {
+                    Console.WriteLine($"Table: {table.FullName}");
+                }
             }
         }
     }
