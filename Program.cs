@@ -29,19 +29,15 @@ namespace Ora2Uml
                 Console.WriteLine($"Connection check fails ...");
             }
 
-            var tables = AllTables.ReadTables(connectionString, " where owner = 'SYS' ");
+            var tables = Reader.ReadTables(connectionString, " where owner = 'SYS' and table_name = 'COUNTRIES' ");
 
             foreach(Table table in tables)
             {
                 Console.WriteLine($"Table: {table}");
-            }
-
-            var table1 = tables.First();
-            var columns = AllTabColumns.ReadColumns(connectionString, table1);
-
-            foreach(Column column in columns)
-            {
-                Console.WriteLine($"Column: {column}");
+                foreach (Column column in table.Columns)
+                {
+                    Console.WriteLine($"  Column: {column}");
+                }
             }
         }
     }
