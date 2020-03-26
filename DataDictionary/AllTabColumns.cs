@@ -10,9 +10,12 @@ namespace Ora2Uml.DataDictionary
         private static String ColOwner => "owner";
         private static String ColTableName => "table_name";
         private static String ColColumnName => "column_name";
+        private static String ColDataType => "data_type";
+        private static String ColNullable => "nullable";
+
         private static String TableName => "all_tab_columns";
 
-        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColColumnName} FROM {TableName} ";
+        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColColumnName}, {ColDataType}, {ColNullable} FROM {TableName} ";
 
         public static IList<Column> ReadColumns(String connString, Table table)
         {
@@ -37,8 +40,10 @@ namespace Ora2Uml.DataDictionary
                         var owner = rdr[ColOwner].ToString();
                         var tableName = rdr[ColTableName].ToString();
                         var columnName = rdr[ColColumnName].ToString();
+                        var dataType = rdr[ColDataType].ToString();
+                        var nullable = rdr[ColNullable].ToString() == "N" ? false : true;
 
-                        columns.Add(new Column(owner, tableName, columnName));
+                        columns.Add(new Column(owner, tableName, columnName, dataType, nullable));
                     }
                 }
             }

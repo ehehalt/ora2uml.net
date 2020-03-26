@@ -9,6 +9,8 @@ namespace Ora2Uml.Objects
         public String Owner { get; set; } = String.Empty;
         public String TableName { get; set; } = String.Empty;
         public String ColumnName { get; set; } = String.Empty;
+        public String DataType { get; set; } = String.Empty;
+        public Boolean Nullable { get; set; } = true;
 
         public String FullName 
         {
@@ -28,16 +30,18 @@ namespace Ora2Uml.Objects
         {    
         }
 
-        public Column(String owner, String tableName, String columnName)
+        public Column(String owner, String tableName, String columnName, String dataType, Boolean nullable)
         {
             this.Owner = owner;
             this.TableName = tableName;
             this.ColumnName = columnName;
+            this.DataType = dataType;
+            this.Nullable = nullable;
         }
 
         public override String ToString()
         {
-            return FullName;
+            return $"{FullName} {DataType} {(Nullable ? "NULL" : "NOT NULL")}";
         }
     }
 }
