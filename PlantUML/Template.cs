@@ -40,6 +40,5 @@ hide stereotypes
 
             return uml;
         }
-
     }
 }
