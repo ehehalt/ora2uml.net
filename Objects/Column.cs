@@ -5,18 +5,18 @@ namespace Ora2Uml.Objects
 {
     public class Column
     {
-        public string Owner { get; set; } = String.Empty;
-        public string TableName { get; set; } = String.Empty;
-        public string ColumnName { get; set; } = String.Empty;
-        public string DataType { get; set; } = String.Empty;
-        public bool Nullable { get; set; } = true;
-        public bool PrimaryKey { get; set; } = false;
-        public int Length { get; set; } = 0;
-        public int DataPrecision { get; set; } = 0;
-        public int DataScale { get; set; } = 0;
-        public string Comment { get; set; } = String.Empty;
+        public String Owner { get; set; } = String.Empty;
+        public String TableName { get; set; } = String.Empty;
+        public String ColumnName { get; set; } = String.Empty;
+        public String DataType { get; set; } = String.Empty;
+        public Boolean Nullable { get; set; } = true;
+        public Boolean PrimaryKey { get; set; } = false;
+        public Decimal? DataLength { get; set; } = null;
+        public Int32? DataPrecision { get; set; } = 0;
+        public Int32? DataScale { get; set; } = 0;
+        public String Comments { get; set; } = String.Empty;
 
-        public string FullName 
+        public String FullName 
         {
             get
             {

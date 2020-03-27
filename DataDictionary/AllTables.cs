@@ -5,7 +5,7 @@ using Ora2Uml.Objects;
 
 namespace Ora2Uml.DataDictionary
 {
-    public static class AllTables
+    public class AllTables : Base
     {
         private static string ColOwner => "owner";
         private static string ColTableName => "table_name";
@@ -44,9 +44,9 @@ namespace Ora2Uml.DataDictionary
 
                     while(rdr.Read())
                     {
-                        var owner = rdr[ColOwner].ToString();
-                        var tableName = rdr[ColTableName].ToString();
-                        var comments = rdr[ColComments].ToString();
+                        var owner = GetString(rdr[ColOwner]);
+                        var tableName = GetString(rdr[ColTableName]);
+                        var comments = GetString(rdr[ColComments]);
 
                         tables.Add(new Table(owner, tableName, comments));
                     }

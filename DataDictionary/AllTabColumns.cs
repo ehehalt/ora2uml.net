@@ -5,24 +5,56 @@ using Ora2Uml.Objects;
 
 namespace Ora2Uml.DataDictionary
 {
-    public static class AllTabColumns
+    public class AllTabColumns : Base
     {
-        private static String ColOwner => "owner";
-        private static String ColTableName => "table_name";
-        private static String ColColumnName => "column_name";
-        private static String ColDataType => "data_type";
-        private static String ColNullable => "nullable";
+        private static string ColOwner => "owner";
+        private static string ColTableName => "table_name";
+        private static string ColColumnName => "column_name";
+        private static string ColDataType => "data_type";
+        private static string ColDataLength => "data_length";
+        private static string ColNullable => "nullable";
+        private static string ColDataPrecision => "data_precision";
+        private static string ColDataScale => "data_scale";
+        private static string ColComments => "comments";
 
-        private static String TableName => "all_tab_columns";
+        private static string TblAllTabColumns => "all_tab_columns";
+        private static string TblAllColComments => "all_col_comments";
 
-        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName}, {ColColumnName}, {ColDataType}, {ColNullable} FROM {TableName} ";
+        private static string SqlSelect => @"SELECT
+            " + ColOwner + @",
+            " + ColTableName + @",
+            " + ColColumnName + @",
+            " + ColDataType + @",
+            " + ColDataLength + @",
+            " + ColNullable + @",
+            " + ColDataPrecision + @",
+            " + ColDataScale + @",
+            " + ColComments + @"
+        FROM ( 
+            SELECT
+                " + TblAllTabColumns + "." + ColOwner + @",
+                " + TblAllTabColumns + "." + ColTableName + @",
+                " + TblAllTabColumns + "." + ColColumnName + @",
+                " + TblAllTabColumns + "." + ColDataType + @",
+                " + TblAllTabColumns + "." + ColDataLength + @",
+                " + TblAllTabColumns + "." + ColNullable + @",
+                " + TblAllTabColumns + "." + ColDataPrecision + @",
+                " + TblAllTabColumns + "." + ColDataScale + @",
+                " + TblAllColComments + "." + ColComments + @"
+            FROM
+                " + TblAllTabColumns + @"
+                LEFT OUTER JOIN " + TblAllColComments + @" ON
+                    " + TblAllTabColumns + "." + ColOwner + " = " + TblAllColComments + "." + ColOwner + @" AND 
+                    " + TblAllTabColumns + "." + ColTableName + " = " + TblAllColComments + "." + ColTableName + @" AND 
+                    " + TblAllTabColumns + "." + ColColumnName + " = " + TblAllTabColumns + "." + ColColumnName + @"
+        ) ";
 
-        public static IList<Column> ReadColumns(String connString, Table table)
+        public static IList<Column> ReadColumns(string connString, Table table)
         {
             return ReadColumns(connString, $" where table_name = '{table.TableName}'");
         }
 
-        public static IList<Column> ReadColumns(String connString, String whereClause)
+        public static IList<Column> ReadColumns(string connString, string whereClause)
         {
             IList<Column> columns = new List<Column>();
 
@@ -37,13 +69,29 @@ namespace Ora2Uml.DataDictionary
 
                     while(rdr.Read())
                     {
-                        var owner = rdr[ColOwner].ToString();
-                        var tableName = rdr[ColTableName].ToString();
-                        var columnName = rdr[ColColumnName].ToString();
-                        var dataType = rdr[ColDataType].ToString();
-                        var nullable = rdr[ColNullable].ToString() == "N" ? false : true;
+                        String owner = GetString(rdr[ColOwner]);
+                        String tableName = GetString(rdr[ColTableName]);
+                        String columnName = GetString(rdr[ColColumnName]);
+                        String dataType = GetString(rdr[ColDataType]);
+                        Decimal? dataLength = GetValue<Decimal?>(rdr[ColDataLength]);
+                        Boolean nullable = GetString(rdr[ColNullable]) == "N" ? false : true;
+                        Int32? dataPrecision = GetValue<Int32?>(rdr[ColDataPrecision]);
+                        Int32? dataScale = GetValue<Int32?>(rdr[ColDataPrecision]);
+                        String comments = GetString(rdr[ColComments]);
 
-                        columns.Add(new Column(owner, tableName, columnName, dataType, nullable));
+                        var col = new Column()
+                        {
+                            Owner = owner,
+                            TableName = tableName,
+                            ColumnName = columnName,
+                            DataType = dataType,
+                            DataLength = dataLength,
+                            Nullable = nullable,
+                            DataPrecision = dataPrecision,
+                            DataScale = dataScale,
+                            Comments = comments
+                        };
+                        columns.Add(col);
                     }
                 }
             }

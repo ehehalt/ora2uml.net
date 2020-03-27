@@ -42,6 +42,10 @@ namespace Ora2Uml
                 foreach (Column column in table.Columns)
                 {
                     Console.WriteLine($"  Column: {column}");
+                    if (!String.IsNullOrEmpty(column.Comments))
+                    {
+                        Console.WriteLine($"          {column.Comments}");
+                    }
                 }
             }
         }
