@@ -8,7 +8,7 @@ namespace Ora2Uml.Objects
     {
         public string Owner { get; set; } = String.Empty;
         public string TableName { get; set; } = String.Empty;
-        public string Comment { get; set; } = String.Empty;
+        public string Comments { get; set; } = String.Empty;
 
         public string FullName => $"{Owner}{(String.IsNullOrEmpty(Owner) ? "" : ".")}{TableName}";
 
@@ -23,10 +23,11 @@ namespace Ora2Uml.Objects
         {    
         }
 
-        public Table(string owner, string tableName)
+        public Table(string owner, string tableName, string comments)
         {
             this.Owner = owner;
             this.TableName = tableName;
+            this.Comments = comments;
         }
 
         public override string ToString()

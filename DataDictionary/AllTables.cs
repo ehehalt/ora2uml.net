@@ -7,13 +7,29 @@ namespace Ora2Uml.DataDictionary
 {
     public static class AllTables
     {
-        private static String ColOwner => "owner";
-        private static String ColTableName => "table_name";
-        private static String TableName => "all_tables";
+        private static string ColOwner => "owner";
+        private static string ColTableName => "table_name";
+        private static string ColComments => "comments";
+        private static string TblAllTables => "all_tables";
+        private static string TblAllTabComments => "all_tab_comments";
 
-        private static String SqlSelect => $" SELECT {ColOwner}, {ColTableName} FROM {TableName} ";
+        private static string SqlSelect => @"SELECT 
+            " + ColOwner + @",
+            " + ColTableName + @",
+            " + ColComments + @"
+        FROM (
+            SELECT
+                " + TblAllTables + "." + ColOwner + @",
+                " + TblAllTables + "." + ColTableName + @",
+                " + TblAllTabComments + "." + ColComments + @"
+            FROM
+                " + TblAllTables + @"
+                LEFT OUTER JOIN " + TblAllTabComments + @" ON 
+                    " + TblAllTables + "." + ColOwner + " = " + TblAllTabComments + "." + ColOwner + @" AND
+                    " + TblAllTables + "." + ColTableName + " = " + TblAllTabComments + "." + ColTableName + @"
+        ) ";
 
-        public static IList<Table> ReadTables(String connString, String whereClause)
+        public static IList<Table> ReadTables(string connString, string whereClause)
         {
             IList<Table> tables = new List<Table>();
 
@@ -30,8 +46,9 @@ namespace Ora2Uml.DataDictionary
                     {
                         var owner = rdr[ColOwner].ToString();
                         var tableName = rdr[ColTableName].ToString();
+                        var comments = rdr[ColComments].ToString();
 
-                        tables.Add(new Table(owner, tableName));
+                        tables.Add(new Table(owner, tableName, comments));
                     }
                 }
             }
