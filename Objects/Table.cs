@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ora2Uml.Objects
 {
-    public class Table {
-        public String Owner { get; set; } = String.Empty;
-        public String TableName { get; set; } = String.Empty;
+    public class Table 
+    {
+        public string Owner { get; set; } = String.Empty;
+        public string TableName { get; set; } = String.Empty;
+        public string Comment { get; set; } = String.Empty;
 
-        public String FullName => $"{Owner}{(String.IsNullOrEmpty(Owner) ? "" : ".")}{TableName}";
+        public string FullName => $"{Owner}{(String.IsNullOrEmpty(Owner) ? "" : ".")}{TableName}";
 
         public IList<Column> Columns { get; set; } = new List<Column>();
+        public IEnumerable<Column> PrimaryKeys => Columns.Where(c => c.PrimaryKey);
 
         // Implement with columns?
         // Referenced by
@@ -19,13 +23,13 @@ namespace Ora2Uml.Objects
         {    
         }
 
-        public Table(String owner, String tableName)
+        public Table(string owner, string tableName)
         {
             this.Owner = owner;
             this.TableName = tableName;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return FullName;
         }

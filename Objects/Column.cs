@@ -1,18 +1,22 @@
 using System;
 using System.Collections.Generic;
-using Oracle.ManagedDataAccess.Client;
 
 namespace Ora2Uml.Objects
 {
     public class Column
     {
-        public String Owner { get; set; } = String.Empty;
-        public String TableName { get; set; } = String.Empty;
-        public String ColumnName { get; set; } = String.Empty;
-        public String DataType { get; set; } = String.Empty;
-        public Boolean Nullable { get; set; } = true;
+        public string Owner { get; set; } = String.Empty;
+        public string TableName { get; set; } = String.Empty;
+        public string ColumnName { get; set; } = String.Empty;
+        public string DataType { get; set; } = String.Empty;
+        public bool Nullable { get; set; } = true;
+        public bool PrimaryKey { get; set; } = false;
+        public int Length { get; set; } = 0;
+        public int DataPrecision { get; set; } = 0;
+        public int DataScale { get; set; } = 0;
+        public string Comment { get; set; } = String.Empty;
 
-        public String FullName 
+        public string FullName 
         {
             get
             {
@@ -30,7 +34,7 @@ namespace Ora2Uml.Objects
         {    
         }
 
-        public Column(String owner, String tableName, String columnName, String dataType, Boolean nullable)
+        public Column(string owner, string tableName, string columnName, string dataType, Boolean nullable)
         {
             this.Owner = owner;
             this.TableName = tableName;
@@ -39,7 +43,7 @@ namespace Ora2Uml.Objects
             this.Nullable = nullable;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return $"{FullName} {DataType} {(Nullable ? "NULL" : "NOT NULL")}";
         }
