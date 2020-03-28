@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Ora2Uml.Objects;
 using Ora2Uml.DataDictionary;
+using Ora2Uml.Objects;
+using Ora2Uml.PlantUML;
 
 namespace Ora2Uml
 {
@@ -20,6 +22,20 @@ namespace Ora2Uml
             connectionString += "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=xe)));User Id=system;Password=sysadm;";
 
             var database = new Database(connectionString);
+
+            // CheckDatabase(database);
+
+            var tables = Reader.ReadTables(connectionString, " where owner = 'SYS' and table_name in ('COUNTRIES', 'REGIONS', 'LOCATIONS') ");
+
+            // OutputTableInformation(tables);
+            Console.WriteLine($"Tables read: {tables.Count}");
+
+            var plantUML = Template.GeneratePlantUML(tables);
+            File.WriteAllText("sample.puml", plantUML);
+        }
+
+        static void CheckDatabase(Database database)
+        {
             if (database.CheckConnection())
             {
                 Console.WriteLine($"Connection checked successfully!");
@@ -28,9 +44,10 @@ namespace Ora2Uml
             {
                 Console.WriteLine($"Connection check fails ...");
             }
+        }
 
-            var tables = Reader.ReadTables(connectionString, " where owner = 'SYS' and table_name = 'COUNTRIES' ");
-
+        static void OutputTableInformation(IList<Table> tables)
+        {
             foreach(Table table in tables)
             {
                 Console.WriteLine($"Table: {table}");

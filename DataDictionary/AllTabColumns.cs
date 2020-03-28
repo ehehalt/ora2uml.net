@@ -46,7 +46,7 @@ namespace Ora2Uml.DataDictionary
                 LEFT OUTER JOIN " + TblAllColComments + @" ON
                     " + TblAllTabColumns + "." + ColOwner + " = " + TblAllColComments + "." + ColOwner + @" AND 
                     " + TblAllTabColumns + "." + ColTableName + " = " + TblAllColComments + "." + ColTableName + @" AND 
-                    " + TblAllTabColumns + "." + ColColumnName + " = " + TblAllTabColumns + "." + ColColumnName + @"
+                    " + TblAllTabColumns + "." + ColColumnName + " = " + TblAllColComments + "." + ColColumnName + @"
         ) ";
 
         public static IList<Column> ReadColumns(string connString, Table table)
