@@ -7,18 +7,25 @@ namespace Ora2Uml.DataDictionary
 {
     public class AllTabColumns : Base
     {
-        private static string ColOwner => "owner";
-        private static string ColTableName => "table_name";
-        private static string ColColumnName => "column_name";
-        private static string ColDataType => "data_type";
-        private static string ColDataLength => "data_length";
-        private static string ColNullable => "nullable";
-        private static string ColDataPrecision => "data_precision";
-        private static string ColDataScale => "data_scale";
-        private static string ColComments => "comments";
+        internal static string ColOwner => "owner";
+        internal static string ColTableName => "table_name";
+        internal static string ColColumnName => "column_name";
+        internal static string ColDataType => "data_type";
+        internal static string ColDataLength => "data_length";
+        internal static string ColNullable => "nullable";
+        internal static string ColDataPrecision => "data_precision";
+        internal static string ColDataScale => "data_scale";
 
-        private static string TblAllTabColumns => "all_tab_columns";
-        private static string TblAllColComments => "all_col_comments";
+        internal static string FulOwner => $"{TblName}.{ColOwner}";
+        internal static string FulTableName => $"{TblName}.{ColTableName}";
+        internal static string FulColumnName => $"{TblName}.{ColColumnName}";
+        internal static string FulDataType => $"{TblName}.{ColDataType}";
+        internal static string FulDataLength => $"{TblName}.{ColDataLength}";
+        internal static string FulNullable => $"{TblName}.{ColNullable}";
+        internal static string FulDataPrecision => $"{TblName}.{ColDataPrecision}";
+        internal static string FulDataScale => $"{TblName}.{ColDataScale}";
+
+        internal static string TblName => "all_tab_columns";
 
         private static string SqlSelect => @"SELECT
             " + ColOwner + @",
@@ -29,24 +36,24 @@ namespace Ora2Uml.DataDictionary
             " + ColNullable + @",
             " + ColDataPrecision + @",
             " + ColDataScale + @",
-            " + ColComments + @"
+            " + AllColComments.ColComments + @"
         FROM ( 
             SELECT
-                " + TblAllTabColumns + "." + ColOwner + @",
-                " + TblAllTabColumns + "." + ColTableName + @",
-                " + TblAllTabColumns + "." + ColColumnName + @",
-                " + TblAllTabColumns + "." + ColDataType + @",
-                " + TblAllTabColumns + "." + ColDataLength + @",
-                " + TblAllTabColumns + "." + ColNullable + @",
-                " + TblAllTabColumns + "." + ColDataPrecision + @",
-                " + TblAllTabColumns + "." + ColDataScale + @",
-                " + TblAllColComments + "." + ColComments + @"
+                " + FulOwner + @",
+                " + FulTableName + @",
+                " + FulColumnName + @",
+                " + FulDataType + @",
+                " + FulDataLength + @",
+                " + FulNullable + @",
+                " + FulDataPrecision + @",
+                " + FulDataScale + @",
+                " + AllColComments.FulComments + @"
             FROM
-                " + TblAllTabColumns + @"
-                LEFT OUTER JOIN " + TblAllColComments + @" ON
-                    " + TblAllTabColumns + "." + ColOwner + " = " + TblAllColComments + "." + ColOwner + @" AND 
-                    " + TblAllTabColumns + "." + ColTableName + " = " + TblAllColComments + "." + ColTableName + @" AND 
-                    " + TblAllTabColumns + "." + ColColumnName + " = " + TblAllColComments + "." + ColColumnName + @"
+                " + TblName + @"
+                LEFT OUTER JOIN " + AllColComments.TblName + @" ON
+                    " + FulOwner + " = " + AllColComments.FulOwner + @" AND 
+                    " + FulTableName + " = " + AllColComments.FulTableName + @" AND 
+                    " + FulColumnName + " = " + AllColComments.FulColumnName + @"
         ) ";
 
         public static IList<Column> ReadColumns(string connString, Table table)
@@ -77,7 +84,7 @@ namespace Ora2Uml.DataDictionary
                         Boolean nullable = GetString(rdr[ColNullable]) == "N" ? false : true;
                         Int32? dataPrecision = GetValue<Int32?>(rdr[ColDataPrecision]);
                         Int32? dataScale = GetValue<Int32?>(rdr[ColDataPrecision]);
-                        String comments = GetString(rdr[ColComments]);
+                        String comments = GetString(rdr[AllColComments.ColComments]);
 
                         var col = new Column()
                         {

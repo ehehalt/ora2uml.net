@@ -8,26 +8,28 @@ namespace Ora2Uml.DataDictionary
 {
     public class AllTables : Base
     {
-        private static string ColOwner => "owner";
-        private static string ColTableName => "table_name";
-        private static string ColComments => "comments";
-        private static string TblAllTables => "all_tables";
-        private static string TblAllTabComments => "all_tab_comments";
+        internal static string ColOwner => "owner";
+        internal static string ColTableName => "table_name";
+
+        internal static string FulOwner => $"{TblName}.{ColOwner}";
+        internal static string FulTableName => $"{TblName}.{ColTableName}";
+
+        internal static string TblName => "all_tables";
 
         private static string SqlSelect => @"SELECT 
             " + ColOwner + @",
             " + ColTableName + @",
-            " + ColComments + @"
+            " + AllTabComments.ColComments + @"
         FROM (
             SELECT
-                " + TblAllTables + "." + ColOwner + @",
-                " + TblAllTables + "." + ColTableName + @",
-                " + TblAllTabComments + "." + ColComments + @"
+                " + FulOwner + @",
+                " + FulTableName + @",
+                " + AllTabComments.FulComments + @"
             FROM
-                " + TblAllTables + @"
-                LEFT OUTER JOIN " + TblAllTabComments + @" ON 
-                    " + TblAllTables + "." + ColOwner + " = " + TblAllTabComments + "." + ColOwner + @" AND
-                    " + TblAllTables + "." + ColTableName + " = " + TblAllTabComments + "." + ColTableName + @"
+                " + TblName + @"
+                LEFT OUTER JOIN " + AllTabComments.TblName + @" ON 
+                    " + FulOwner + " = " + AllTabComments.FulOwner + @" AND
+                    " + FulTableName + " = " + AllTabComments.FulTableName + @"
         ) ";
 
         public static IList<Table> ReadTables(string connString, string[] ownerWhiteList, string[] tableWhiteList)
@@ -70,7 +72,7 @@ namespace Ora2Uml.DataDictionary
                     {
                         var owner = GetString(rdr[ColOwner]);
                         var tableName = GetString(rdr[ColTableName]);
-                        var comments = GetString(rdr[ColComments]);
+                        var comments = GetString(rdr[AllTabComments.ColComments]);
 
                         tables.Add(new Table(owner, tableName, comments));
                     }
