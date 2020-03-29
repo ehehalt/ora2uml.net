@@ -1,0 +1,32 @@
+
+@startuml sample
+
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+
+!define primary_key(x) <b>x</b>
+!define unique(x) <color:green>x</color>
+!define not_null(x) <u>x</u>
+
+hide methods
+hide stereotypes
+
+Table(locations, "locations") {
+not_null(city) VARCHAR2
+country_id CHAR
+not_null(location_id) NUMBER
+postal_code VARCHAR2
+state_province VARCHAR2
+street_address VARCHAR2
+}
+Table(regions, "regions") {
+not_null(region_id) NUMBER
+region_name VARCHAR2
+}
+Table(countries, "countries") {
+not_null(country_id) CHAR
+country_name VARCHAR2
+region_id NUMBER
+}
+
+
+@enduml

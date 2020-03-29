@@ -31,7 +31,7 @@ namespace Ora2Uml
             Console.WriteLine($"Tables read: {tables.Count}");
 
             var plantUML = Template.GeneratePlantUML(tables);
-            File.WriteAllText("sample.puml", plantUML);
+            File.WriteAllText(Path.Join("Sample", "sample.puml"), plantUML);
         }
 
         static void CheckDatabase(Database database)

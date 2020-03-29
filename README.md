@@ -1,3 +1,7 @@
 # ora2uml
 
-Generate PlantUML dot files from Oracle data dictionary.
+Generate [PlantUML](https://plantuml.com) dot files from Oracle data dictionary.
+
+Sample image:
+
+![sample.puml](sample/sample.png)
