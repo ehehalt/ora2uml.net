@@ -11,22 +11,25 @@ hide methods
 hide stereotypes
 
 Table(locations, "locations") {
-not_null(city) VARCHAR2
-country_id CHAR
-not_null(location_id) NUMBER
-postal_code VARCHAR2
-state_province VARCHAR2
-street_address VARCHAR2
+primary_key(unique(not_null(location_id))) NUMBER
+unique(not_null(city)) VARCHAR2
+unique(country_id) CHAR
+unique(postal_code) VARCHAR2
+unique(state_province) VARCHAR2
+unique(street_address) VARCHAR2
 }
+
 Table(regions, "regions") {
-not_null(region_id) NUMBER
-region_name VARCHAR2
+primary_key(unique(not_null(region_id))) NUMBER
+unique(region_name) VARCHAR2
 }
+
 Table(countries, "countries") {
-not_null(country_id) CHAR
-country_name VARCHAR2
-region_id NUMBER
+primary_key(unique(not_null(country_id))) CHAR
+unique(country_name) VARCHAR2
+unique(region_id) NUMBER
 }
+
 
 
 @enduml

@@ -37,12 +37,12 @@ hide stereotypes
             {
                 var tbl = $"Table({table.TableName.ToLower()}, \"{table.TableName.ToLower()}\") {{\n";
                 
-                foreach(Column column in table.Columns.OrderBy(c => c.ColumnName))
+                foreach(Column column in table.Columns.OrderBy(c => c.ColumnName).OrderBy(c => !c.PrimaryKey))
                 {
                     tbl += $"{GetColumnText(column)}\n";
                 }
 
-                tbl += "}\n";
+                tbl += "}\n\n";
                 uml += tbl;
             }
 
@@ -54,9 +54,20 @@ hide stereotypes
         private static String GetColumnText(Column column)
         {
             var result = column.ColumnName.ToLower();
+
             if (!column.Nullable)
             {
                 result = $"not_null({result})";
+            }
+
+            if (column.Unique)
+            {
+                result = $"unique({result})";
+            }
+
+            if (column.PrimaryKey)
+            {
+                result = $"primary_key({result})";
             }
 
             result += $" {column.DataType.ToUpper()}";

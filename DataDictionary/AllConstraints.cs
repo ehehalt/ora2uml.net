@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Oracle.ManagedDataAccess.Client;
 using Ora2Uml.Objects;
 
@@ -7,7 +8,9 @@ namespace Ora2Uml.DataDictionary
 {
     public class AllConstraints : Base
     {
-        internal static string TypePrimaryKey => "P";
+        internal const string TypePrimaryKey = "P";
+        internal const string TypeCheckConstraint = "C";
+        internal const string TypeUnique = "U";
 
         internal static string ColConstraintName => "constraint_name";
         internal static string ColTableName => "table_name";
@@ -21,13 +24,58 @@ namespace Ora2Uml.DataDictionary
 
         internal static string TblName => "all_constraints";
 
-/*
-    select =   "select acc.column_name from all_constraints ac, all_cons_columns acc "
-    select += "where ac.table_name = '#{table_name}' "
-    select += "and ac.owner = '#{owner}' " unless owner.nil?
-    select += "and ac.constraint_name = acc.constraint_name "
-    select += "and ac.constraint_type = 'P'"
-*/
+        internal static string ReplaceTable => "$$TABLE$$";
+        internal static string ReplaceOwner => "$$OWNER$$";
 
+        private static string SqlSelectPrimaryKey => @"SELECT
+            " + AllConsColumns.ColColumnName + @",
+            " + ColConstraintType + @"
+        FROM
+            " + TblName + @"
+            JOIN " + AllConsColumns.TblName + @" 
+                ON " + FulConstraintName + " = " + AllConsColumns.FulConstraintName + @"
+        WHERE
+            " + FulTableName + $" = '{ReplaceTable}' " + @" AND
+            " + FulOwner + $" = '{ReplaceOwner}' "; // + @" AND
+            // " + FulConstraintType + $" = '{TypePrimaryKey}' ";
+
+        internal static IList<Column> MarkPrimaryKeys(String connString, Table table, IList<Column> columns) {
+            var sqlSelect = SqlSelectPrimaryKey;
+            sqlSelect = sqlSelect.Replace(ReplaceTable, table.TableName);
+            sqlSelect = sqlSelect.Replace(ReplaceOwner, table.Owner);
+
+            try
+            {
+                using(OracleConnection conn = new OracleConnection(connString))
+                {
+                    conn.Open();
+
+                    var cmd = new OracleCommand(sqlSelect, conn);
+                    var rdr = cmd.ExecuteReader();
+
+                    while(rdr.Read())
+                    {
+                        String columnName = GetString(rdr[AllConsColumns.ColColumnName]);
+                        String constraintType = GetString(rdr[ColConstraintType]);
+
+                        switch(constraintType)
+                        {
+                            case TypePrimaryKey:
+                                columns = columns.Select(n => { if (n.ColumnName.ToUpper() == columnName.ToUpper()) { n.PrimaryKey = true; } return n; }).ToList();
+                                break;
+                            case TypeUnique:
+                                columns = columns.Select(n => { if (n.ColumnName.ToUpper() == columnName.ToUpper()) { n.Unique = true; } return n; }).ToList();
+                                break;
+                        }
+                    }   
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine(ex.Message);
+            }
+            
+            return columns;
+        }
     }
 }

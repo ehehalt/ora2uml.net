@@ -12,6 +12,7 @@ namespace Ora2Uml.DataDictionary
             foreach (Table table in tables)
             {
                 table.Columns = AllTabColumns.ReadColumns(connectionString, table);
+                table.Columns = AllConstraints.MarkPrimaryKeys(connectionString, table, table.Columns);
             }
 
             return tables;
@@ -23,6 +24,7 @@ namespace Ora2Uml.DataDictionary
             foreach (Table table in tables)
             {
                 table.Columns = AllTabColumns.ReadColumns(connectionString, table);
+                table.Columns = AllConstraints.MarkPrimaryKeys(connectionString, table, table.Columns);
             }
 
             return tables;

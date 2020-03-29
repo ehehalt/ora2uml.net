@@ -15,6 +15,7 @@ namespace Ora2Uml.Objects
         public Int32? DataPrecision { get; set; } = 0;
         public Int32? DataScale { get; set; } = 0;
         public String Comments { get; set; } = String.Empty;
+        public Boolean Unique { get; set; } = false;
 
         public String FullName 
         {
