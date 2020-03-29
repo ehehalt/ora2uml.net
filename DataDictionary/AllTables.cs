@@ -6,7 +6,7 @@ using Ora2Uml.Objects;
 
 namespace Ora2Uml.DataDictionary
 {
-    public class AllTables : Base
+    internal class AllTables : Base
     {
         internal static string ColOwner => "owner";
         internal static string ColTableName => "table_name";
@@ -32,7 +32,7 @@ namespace Ora2Uml.DataDictionary
                     " + FulTableName + " = " + AllTabComments.FulTableName + @"
         ) ";
 
-        public static IList<Table> ReadTables(string connString, string[] ownerWhiteList, string[] tableWhiteList)
+        internal static IList<Table> ReadTables(string connString, string[] ownerWhiteList, string[] tableWhiteList)
         {
             var whereClause = $"";
             var whereParts = new List<String>();
@@ -55,7 +55,7 @@ namespace Ora2Uml.DataDictionary
             return ReadTables(connString, whereClause);
         }
 
-        public static IList<Table> ReadTables(string connString, string whereClause)
+        internal static IList<Table> ReadTables(string connString, string whereClause)
         {
             IList<Table> tables = new List<Table>();
 
