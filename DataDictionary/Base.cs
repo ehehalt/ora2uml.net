@@ -4,20 +4,6 @@ namespace Ora2Uml.DataDictionary
 {
     public class Base
     {
-        /*
-        protected static Decimal? GetValue(object value)
-        {
-            Decimal? result = null;
-
-            if (value != System.DBNull.Value && typeof(Decimal).Equals(value.GetType()))
-            {
-                result = (Decimal)value;
-            }
-
-            return result;
-        }
-        */
-
         protected static T GetValue<T>(object value)
         {
             T result = default(T);

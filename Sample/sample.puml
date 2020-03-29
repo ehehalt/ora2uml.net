@@ -10,6 +10,8 @@
 hide methods
 hide stereotypes
 
+' Tables ...
+
 Table(locations, "locations") {
 primary_key(not_null(location_id)) NUMBER
 not_null(city) VARCHAR2
@@ -29,6 +31,8 @@ primary_key(not_null(country_id)) CHAR
 country_name VARCHAR2
 region_id NUMBER
 }
+
+' Relationships ...
 
 
 
