@@ -16,5 +16,16 @@ namespace Ora2Uml.DataDictionary
 
             return tables;
         }
+
+        public static IList<Table> ReadTables(string connectionString, string[] ownerWhiteList, string[] tableWhiteList)
+        {
+            var tables = AllTables.ReadTables(connectionString, ownerWhiteList, tableWhiteList);
+            foreach (Table table in tables)
+            {
+                table.Columns = AllTabColumns.ReadColumns(connectionString, table);
+            }
+
+            return tables;
+        }
     }
 }

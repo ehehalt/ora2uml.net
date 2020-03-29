@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Oracle.ManagedDataAccess.Client;
 using Ora2Uml.Objects;
 
@@ -28,6 +29,29 @@ namespace Ora2Uml.DataDictionary
                     " + TblAllTables + "." + ColOwner + " = " + TblAllTabComments + "." + ColOwner + @" AND
                     " + TblAllTables + "." + ColTableName + " = " + TblAllTabComments + "." + ColTableName + @"
         ) ";
+
+        public static IList<Table> ReadTables(string connString, string[] ownerWhiteList, string[] tableWhiteList)
+        {
+            var whereClause = $"";
+            var whereParts = new List<String>();
+
+            if (ownerWhiteList != null && ownerWhiteList.Length > 0)
+            {
+                whereParts.Add($" {ColOwner} IN ({String.Join(",", ownerWhiteList.Select(x => $"'{x.ToUpper()}'"))}) ");
+            }
+
+            if (tableWhiteList != null && tableWhiteList.Length > 0)
+            {
+                whereParts.Add($" {ColTableName} IN ({String.Join(",", tableWhiteList.Select(x => $"'{x.ToUpper()}'"))}) ");
+            }
+
+            if (whereParts.Count > 0)
+            {
+                whereClause = $" WHERE {String.Join(" AND ", whereParts)} ";
+            }
+
+            return ReadTables(connString, whereClause);
+        }
 
         public static IList<Table> ReadTables(string connString, string whereClause)
         {

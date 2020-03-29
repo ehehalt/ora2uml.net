@@ -25,7 +25,7 @@ namespace Ora2Uml
 
             // CheckDatabase(database);
 
-            var tables = Reader.ReadTables(connectionString, " where owner = 'SYS' and table_name in ('COUNTRIES', 'REGIONS', 'LOCATIONS') ");
+            var tables = Reader.ReadTables(connectionString, new string[]{"SYS"}, new string[]{"COUNTRIES", "REGIONS", "LOCATIONS"});
 
             // OutputTableInformation(tables);
             Console.WriteLine($"Tables read: {tables.Count}");

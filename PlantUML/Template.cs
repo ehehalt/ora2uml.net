@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ora2Uml.Objects;
 
 namespace Ora2Uml.PlantUML
@@ -36,7 +37,7 @@ hide stereotypes
             {
                 var tbl = $"Table({table.TableName.ToLower()}, \"{table.TableName.ToLower()}\") {{\n";
                 
-                foreach(Column column in table.Columns)
+                foreach(Column column in table.Columns.OrderBy(c => c.ColumnName))
                 {
                     tbl += $"{GetColumnText(column)}\n";
                 }
