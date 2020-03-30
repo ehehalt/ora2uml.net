@@ -350,3 +350,4 @@ MigrationBackup/
 .ionide/
 
 temp.sql
+.DS_Store
