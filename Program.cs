@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Ora2Uml.DataDictionary;
+using System.Diagnostics;
 using Ora2Uml.Objects;
 using Ora2Uml.PlantUML;
+using Ora2Uml.DataDictionary;
 
 namespace Ora2Uml
 {
@@ -33,7 +34,6 @@ namespace Ora2Uml
             var umlData = Template.GeneratePlantUML(tables);
             var umlPath = Path.Join("Sample", "sample.puml");
             File.WriteAllText(umlPath, umlData);
-            GenerateDiagram(umlPath);
         }
 
         static void CheckDatabase(Database database)
@@ -67,11 +67,6 @@ namespace Ora2Uml
                     }
                 }
             }
-        }
-
-        static void GenerateDiagram(string umlPath)
-        {
-            // var process = new Process();
         }
     }
 }
