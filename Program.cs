@@ -30,8 +30,10 @@ namespace Ora2Uml
             // OutputTableInformation(tables);
             Console.WriteLine($"Tables read: {tables.Count}");
 
-            var plantUML = Template.GeneratePlantUML(tables);
-            File.WriteAllText(Path.Join("Sample", "sample.puml"), plantUML);
+            var umlData = Template.GeneratePlantUML(tables);
+            var umlPath = Path.Join("Sample", "sample.puml");
+            File.WriteAllText(umlPath, umlData);
+            GenerateDiagram(umlPath);
         }
 
         static void CheckDatabase(Database database)
@@ -65,6 +67,11 @@ namespace Ora2Uml
                     }
                 }
             }
+        }
+
+        static void GenerateDiagram(string umlPath)
+        {
+            // var process = new Process();
         }
     }
 }
