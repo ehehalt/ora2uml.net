@@ -5,3 +5,15 @@ Generate [PlantUML](https://plantuml.com) dot files from Oracle data dictionary.
 Sample image:
 
 ![sample.puml](Sample/sample.png)
+
+To generate a png:
+
+```bash
+plantuml sample.puml
+```
+
+To generate a svg:
+
+```bash
+plantuml -tsvg sample.puml
+```
