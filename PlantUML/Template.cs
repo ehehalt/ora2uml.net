@@ -31,26 +31,34 @@ hide stereotypes
 
         public static String GeneratePlantUML(IList<Table> tables)
         {
-            var uml = "' Tables ...\n\n";
+            var uml = $"' Tables ...{Environment.NewLine}{Environment.NewLine}";
 
             // *** Tables ***
 
             foreach(Table table in tables)
             {
-                var tbl = $"Table({table.TableName.ToLower()}, \"{table.TableName.ToLower()}\") {{\n";
+                var tbl = $"Table({table.TableName.ToLower()}, \"{table.TableName.ToLower()}\") {{{Environment.NewLine}";
                 
                 foreach(Column column in table.Columns.OrderBy(c => c.ColumnName).OrderBy(c => !c.PrimaryKey))
                 {
-                    tbl += $"{GetColumnText(column)}\n";
+                    tbl += $"{GetColumnText(column)}{Environment.NewLine}";
                 }
 
-                tbl += "}\n\n";
+                tbl += $"}}{Environment.NewLine}{Environment.NewLine}";
                 uml += tbl;
             }
 
             // *** Relationships ***
 
-            uml += "' Relationships ...\n\n";
+            uml += $"' Relationships ...{Environment.NewLine}{Environment.NewLine}";
+
+            foreach(Table table in tables)
+            {
+                foreach(Table child in table.Childs)
+                {
+                    uml += $"{table.TableName.ToLower()} --> {child.TableName.ToLower()} {Environment.NewLine}";
+                }
+            }
 
             uml = templatePrefix + uml + templatePostfix;
 
@@ -83,15 +91,3 @@ hide stereotypes
         }
     }
 }
-
-/*
-' relationships
-' one-to-one relationship
-user -- user_profile : "A user only \nhas one profile"
-' one to may relationship
-user --> session : "A user may have\n many sessions"
-' many to many relationship
-' Add mark if you like
-user "1" --> "*" user_group : "A user may be \nin many groups"
-group "1" --> "0..N" user_group : "A group may \ncontain many users"
-*/

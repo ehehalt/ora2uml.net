@@ -34,6 +34,8 @@ region_id NUMBER
 
 ' Relationships ...
 
+regions --> countries 
+countries --> locations 
 
 
 @enduml

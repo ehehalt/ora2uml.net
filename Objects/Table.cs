@@ -14,6 +14,7 @@ namespace Ora2Uml.Objects
 
         public IList<Column> Columns { get; set; } = new List<Column>();
         public IEnumerable<Column> PrimaryKeys => Columns.Where(c => c.PrimaryKey);
+        public IList<Table> Childs { get; set; } = new List<Table>();
 
         // Implement with columns?
         // Referenced by

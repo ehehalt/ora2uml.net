@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Oracle.ManagedDataAccess.Client;
 using Ora2Uml.Objects;
 
@@ -104,7 +105,8 @@ namespace Ora2Uml.DataDictionary
             }
             catch(Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
+                var methodName = MethodBase.GetCurrentMethod().Name;
+                Console.Error.WriteLine($"{methodName}: {ex.Message}");
                 columns.Clear();
             }
 

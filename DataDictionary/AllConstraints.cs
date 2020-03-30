@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Oracle.ManagedDataAccess.Client;
 using Ora2Uml.Objects;
 
@@ -10,12 +11,15 @@ namespace Ora2Uml.DataDictionary
     {
         internal const string TypePrimaryKey = "P";
         internal const string TypeCheckConstraint = "C";
+        internal const string TypeRelation = "R";
         internal const string TypeUnique = "U";
 
         internal static string ColConstraintName => "constraint_name";
         internal static string ColTableName => "table_name";
         internal static string ColOwner => "owner";
         internal static string ColConstraintType => "constraint_type";
+        internal static string ColROwner => "r_owner";
+        internal static string ColRConstraintName => "r_constraint_name";
 
         internal static string FulConstraintName => $"{TblName}.{ColConstraintName}";
         internal static string FulTableName => $"{TblName}.{ColTableName}";
@@ -27,7 +31,8 @@ namespace Ora2Uml.DataDictionary
         internal static string ReplaceTable => "$$TABLE$$";
         internal static string ReplaceOwner => "$$OWNER$$";
 
-        private static string SqlSelectPrimaryKey => @"SELECT
+        private static string SqlSelectPrimaryKey => @"
+        SELECT
             " + AllConsColumns.ColColumnName + @",
             " + ColConstraintType + @"
         FROM
@@ -72,10 +77,60 @@ namespace Ora2Uml.DataDictionary
             }
             catch (Exception ex)
             {
-                Console.Error.WriteLine(ex.Message);
+                var methodName = MethodBase.GetCurrentMethod().Name;
+                Console.Error.WriteLine($"{methodName}: {ex.Message}");
             }
             
             return columns;
+        }
+    
+        private static string SqlSelectRelations => @"
+        SELECT 
+            rel." + ColOwner + @",
+            rel." + ColTableName + @"
+        FROM
+            " + TblName + @" cur 
+            LEFT OUTER JOIN " + TblName + @" rel 
+                ON 
+                    cur." + ColROwner + " = rel." + ColOwner + @" AND
+                    cur." + ColRConstraintName + " = rel." + ColConstraintName + @"
+        WHERE
+            cur." + ColTableName + $" = '{ReplaceTable}' " + @" AND
+            cur." + ColOwner + $" = '{ReplaceOwner}' " + @" AND
+            cur." + ColConstraintType + $" = '{TypeRelation}' " + @" AND
+            rel." + ColConstraintType + $" = '{TypePrimaryKey}' ";
+
+        internal static IList<Table> MarkRelations(String connString, Table table, IList<Table> tables) {
+            var sqlSelect = SqlSelectRelations;
+            sqlSelect = sqlSelect.Replace(ReplaceTable, table.TableName);
+            sqlSelect = sqlSelect.Replace(ReplaceOwner, table.Owner);
+
+            try
+            {
+                using(OracleConnection conn = new OracleConnection(connString))
+                {
+                    conn.Open();
+
+                    var cmd = new OracleCommand(sqlSelect, conn);
+                    var rdr = cmd.ExecuteReader();
+
+                    while(rdr.Read())
+                    {
+                        String owner = GetString(rdr[ColOwner]).ToUpper();
+                        String tableName = GetString(rdr[ColTableName]).ToUpper();
+
+                        tables = tables.Select(t => { if (t.Owner.ToUpper() == owner && t.TableName.ToUpper() == tableName) { t.Childs.Add(table); } return t; }).ToList();
+                    }   
+                }
+            }
+            catch (Exception ex)
+            {
+                var methodName = MethodBase.GetCurrentMethod().Name;
+                Console.Error.WriteLine($"{methodName}: {ex.Message}");
+                Console.Error.WriteLine(sqlSelect);
+            }
+            
+            return tables;
         }
     }
 }
