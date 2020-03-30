@@ -109,6 +109,6 @@ namespace Ora2Uml.DataDictionary
             }
 
             return columns;
-        }
+        }        
     }
 }
