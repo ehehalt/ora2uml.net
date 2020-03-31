@@ -85,7 +85,7 @@ namespace Ora2Uml.DataDictionary
         }
     
         private static string SqlSelectRelations => @"
-        SELECT 
+        SELECT DISTINCT
             rel." + ColOwner + @",
             rel." + ColTableName + @"
         FROM
