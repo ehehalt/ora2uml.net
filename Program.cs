@@ -39,6 +39,15 @@ namespace Ora2Uml
                 try
                 {
                     var configFile = args[0];
+                    if (!File.Exists(configFile))
+                    {
+                        configFile = $"{configFile}.json";
+                        if (!File.Exists(configFile))
+                        {
+                            Console.Error.WriteLine($"Files '{args[0]}' and '{configFile}' not found ...");
+                            System.Environment.Exit(0);
+                        }
+                    }
                     var config = Config.Read(configFile);
                     return config;
 
@@ -51,8 +60,7 @@ namespace Ora2Uml
             }
             else
             {
-                Console.Error.WriteLine("\nStart with config file parameter:\n\n  ora2uml Samples/sample.json\n");
-
+                Console.Error.WriteLine("\nStart with config file parameter:\n\n  ora2uml Samples/sample\n  ora2uml Samples/sample.json\n");
                 System.Environment.Exit(0);
             }
             return null;
