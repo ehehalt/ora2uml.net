@@ -62,7 +62,7 @@ namespace Ora2Uml
         {
             Console.WriteLine("Ora2Uml");
 
-            CreateSampleConfig();
+            // CreateSampleConfig();
 
             var config = ReadConfig(args);
 
