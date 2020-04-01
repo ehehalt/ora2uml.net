@@ -1,0 +1,18 @@
+{
+  "Host": "nb-rod-me09",
+  "Port": 1521,
+  "ServiceName": "xe",
+  "UserId": "system",
+  "Password": "sysadm",
+  "Tables": [
+    "COUNTRIES",
+    "REGIONS",
+    "LOCATIONS"
+  ],
+  "Owners": [
+    "SYS"
+  ],
+  "ColumnsIgnored": [
+    "COUNTRY_ID"
+  ]
+}

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Diagnostics;
+using System.Text.Json;
+using Ora2Uml.Configuration;
 using Ora2Uml.Objects;
 using Ora2Uml.PlantUML;
 using Ora2Uml.DataDictionary;
@@ -11,33 +13,80 @@ namespace Ora2Uml
 {
     class Program
     {
+        static void CreateSampleConfig()
+        {
+            /* Sample Config Creation */
+
+            var config = new Config();
+            config.Host = "nb-rod-me09";
+            config.Port = 1521;
+            config.ServiceName = "xe";
+            config.UserId = "system";
+            config.Password = "sysadm";
+            config.Owners.Add("SYS");
+            config.Tables.Add("COUNTRIES");
+            config.Tables.Add("REGIONS");
+            config.Tables.Add("LOCATIONS");
+            config.ColumnsIgnored.Add("COUNTRY_ID");
+
+            config.Save("Sample/sample.json");
+        }
+
+        static Config ReadConfig(string[] args)
+        {
+            if (args.Length > 0)
+            {
+                try
+                {
+                    var configFile = args[0];
+                    var config = Config.Read(configFile);
+                    return config;
+
+                }
+                catch(Exception ex)
+                {
+                    Console.Error.WriteLine(ex.Message);
+                    System.Environment.Exit(0);
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine("\nStart with config file parameter:\n\n  ora2uml Samples/sample.json\n");
+
+                System.Environment.Exit(0);
+            }
+            return null;
+        }
+
         static void Main(string[] args)
         {
             Console.WriteLine("Ora2Uml");
 
-            var filter = new List<String>();
-            filter.Add("COUNTRIES");
+            CreateSampleConfig();
 
-            // var connection = new Connection(name: "xe", user: "system", password: "sysadm");
-            var connectionString = @"Data Source=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=nb-rod-me09)(PORT=1521)))";
-            connectionString += "(CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME=xe)));User Id=system;Password=sysadm;";
+            var config = ReadConfig(args);
 
-            var database = new Database(connectionString);
+            // CheckDatabase(config.ConnectionString);
 
-            // CheckDatabase(database);
+            var tables = Reader.ReadTables(
+                config.ConnectionString, 
+                config.Owners.ToArray(), 
+                config.Tables.ToArray(), 
+                config.ColumnsIgnored.ToArray());
 
-            var tables = Reader.ReadTables(connectionString, new string[]{"SYS"}, new string[]{"COUNTRIES", "REGIONS", "LOCATIONS"});
-
-            // OutputTableInformation(tables);
             Console.WriteLine($"Tables read: {tables.Count}");
 
+            // OutputTableInformation(tables);
+
             var umlData = Template.GeneratePlantUML(tables);
-            var umlPath = Path.Join("Sample", "sample.puml");
+            var umlPath = $"{Path.GetFileNameWithoutExtension(config.ConfigFileName)}.puml";
             File.WriteAllText(umlPath, umlData);
         }
 
-        static void CheckDatabase(Database database)
+        static void CheckDatabase(String connectionString)
         {
+            var database = new Database(connectionString);
+
             if (database.CheckConnection())
             {
                 Console.WriteLine($"Connection checked successfully!");
