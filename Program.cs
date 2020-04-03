@@ -17,16 +17,20 @@ namespace Ora2Uml
         {
             /* Sample Config Creation */
 
+            TableInformation.DefaultColor = 0xFFAAAA;
+            TableInformation.DefaultOwner = "SYS";
+
             var config = new Config();
-            config.Host = "nb-rod-me09";
-            config.Port = 1521;
-            config.ServiceName = "xe";
-            config.UserId = "system";
-            config.Password = "sysadm";
-            config.Owners.Add("SYS");
-            config.Tables.Add("COUNTRIES");
-            config.Tables.Add("REGIONS");
-            config.Tables.Add("LOCATIONS");
+            config.Database.Host = "nb-rod-me09";
+            config.Database.Port = 1521;
+            config.Database.ServiceName = "xe";
+            config.User.UserId = "system";
+            config.User.Password = "sysadm";
+            
+            config.Tables.Add(new TableInformation("COUNTRIES"));
+            config.Tables.Add(new TableInformation("REGIONS"));
+            config.Tables.Add(new TableInformation("LOCATIONS"));
+
             config.ColumnsIgnored.Add("COUNTRY_ID");
 
             config.Save("Sample/sample.json");
@@ -74,13 +78,12 @@ namespace Ora2Uml
 
             var config = ReadConfig(args);
 
-            // CheckDatabase(config.ConnectionString);
+            // CheckDatabase(config.OracleConnectionString);
 
             var tables = Reader.ReadTables(
-                config.ConnectionString, 
-                config.Owners.ToArray(), 
-                config.Tables.ToArray(), 
-                config.ColumnsIgnored.ToArray());
+                config.OracleConnectionString, 
+                config.Tables,
+                config.ColumnsIgnored);
 
             Console.WriteLine($"Tables read: {tables.Count}");
 
@@ -89,6 +92,7 @@ namespace Ora2Uml
             var umlData = Template.GeneratePlantUML(tables);
             var umlPath = $"{Path.GetFileNameWithoutExtension(config.ConfigFileName)}.puml";
             File.WriteAllText(umlPath, umlData);
+            
         }
 
         static void CheckDatabase(String connectionString)

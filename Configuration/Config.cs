@@ -12,36 +12,30 @@ namespace Ora2Uml.Configuration
         [JsonIgnore]
         public string ConfigFileName { get; set; }
 
-        // Database informations
+        // Database and user information
 
-        public string Host { get; set; }
-        public int Port { get; set; } = 1521;
-        public string ServiceName { get; set; }
-        public string UserId { get; set; }
-        public string Password { get; set; }
+        public DatabaseInformation Database { get; set; } = new DatabaseInformation();
+        public UserInformation User { get; set; } = new UserInformation();
 
         // Data Dictionary informations
-
-        // public IList<TableInformation> Tables { get; set; } = new List<TableInformation>();
         
-        public IList<String> Tables { get; set; } = new List<String>();
-        public IList<String> Owners { get; set; } = new List<String>();
+        public IList<TableInformation> Tables { get; set; } = new List<TableInformation>();
         public IList<String> ColumnsIgnored { get; set; } = new List<String>();
 
         // Methods
 
         [JsonIgnore]
-        public string ConnectionString
+        public string OracleConnectionString
         {
             get
             {
                 var sb = new StringBuilder();
                 sb.Append($"Data Source=");
                 sb.Append($"(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)");
-                sb.Append($"(HOST={Host})(PORT={Port})))");
+                sb.Append($"(HOST={Database.Host})(PORT={Database.Port})))");
                 sb.Append($"(CONNECT_DATA=(SERVER=DEDICATED)");
-                sb.Append($"(SERVICE_NAME={ServiceName})));");
-                sb.Append($"User Id={UserId};Password={Password};");
+                sb.Append($"(SERVICE_NAME={Database.ServiceName})));");
+                sb.Append($"User Id={User.UserId};Password={User.Password};");
                 return sb.ToString();
             }
         }

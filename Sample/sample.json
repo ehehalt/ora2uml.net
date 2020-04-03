@@ -1,16 +1,32 @@
 {
-  "Host": "nb-rod-me09",
-  "Port": 1521,
-  "ServiceName": "xe",
-  "UserId": "system",
-  "Password": "sysadm",
+  "Database": {
+    "Host": "nb-rod-me09",
+    "Port": 1521,
+    "ServiceName": "xe"
+  },
+  "User": {
+    "UserId": "system",
+    "Password": "sysadm"
+  },
   "Tables": [
-    "COUNTRIES",
-    "REGIONS",
-    "LOCATIONS"
-  ],
-  "Owners": [
-    "SYS"
+    {
+      "Owner": "SYS",
+      "Name": "COUNTRIES",
+      "Tags": [],
+      "Color": 16755370
+    },
+    {
+      "Owner": "SYS",
+      "Name": "REGIONS",
+      "Tags": [],
+      "Color": 16755370
+    },
+    {
+      "Owner": "SYS",
+      "Name": "LOCATIONS",
+      "Tags": [],
+      "Color": 16755370
+    }
   ],
   "ColumnsIgnored": [
     "COUNTRY_ID"

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Oracle.ManagedDataAccess.Client;
 using Ora2Uml.Objects;
+using Ora2Uml.Configuration;
 
 namespace Ora2Uml.DataDictionary
 {
@@ -32,6 +33,26 @@ namespace Ora2Uml.DataDictionary
                     " + FulOwner + " = " + AllTabComments.FulOwner + @" AND
                     " + FulTableName + " = " + AllTabComments.FulTableName + @"
         ) ";
+
+        internal static IList<Table> ReadTables(string connString, IList<TableInformation> tables)
+        {
+            var whereClause = String.Empty;
+            var wherePartStart = $" WHERE ({ColOwner}, {ColTableName}) IN (";
+            var wherePartEnd = $")";
+            var whereParts = new List<String>();
+
+            foreach(var table in tables)
+            {
+                whereParts.Add($"('{table.Owner}', '{table.Name}')");
+            }
+
+            if (whereParts.Count > 0)
+            {
+                whereClause = $" {wherePartStart} {String.Join(", ", whereParts)} {wherePartEnd} ";
+            }
+
+            return ReadTables(connString, whereClause);
+        }
 
         internal static IList<Table> ReadTables(string connString, string[] ownerWhiteList, string[] tableWhiteList)
         {
